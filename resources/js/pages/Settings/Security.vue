@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
-import { ShieldCheck, Lock, Key, CheckCircle } from '@lucide/vue'
-import AppLayout from '@/layouts/AppLayout.vue'
+import { Shield, Lock, Key, CheckCircle, Eye, EyeOff } from '@lucide/vue'
+import { ref } from 'vue'
+import SettingsLayout from '@/layouts/SettingsLayout.vue'
 
 const props = defineProps<{
     twoFactorEnabled: boolean
-    recoveryCodes?: string[]
 }>()
 
 // ── Change password form ───────────────────────────────────────────────────
@@ -16,36 +15,31 @@ const pwForm = useForm({
     password_confirmation: '',
 })
 
-const pwSuccess = ref(false)
+const showCurrent = ref(false)
+const showNew     = ref(false)
+const showConfirm = ref(false)
 
 function changePassword() {
-    pwForm.patch('/settings/password', {
-        onSuccess: () => {
-            pwSuccess.value = true
-            pwForm.reset()
-            setTimeout(() => { pwSuccess.value = false }, 4000)
-        },
+    pwForm.patch(route('settings.password.update'), {
+        onSuccess: () => pwForm.reset(),
     })
 }
-
-// ── 2FA state ──────────────────────────────────────────────────────────────
-const show2fa = ref(false)
 </script>
 
 <template>
-    <AppLayout title="Security Settings">
-        <div class="max-w-2xl mx-auto space-y-6">
+    <SettingsLayout>
+        <div class="space-y-5">
 
-            <!-- Page header -->
-            <div class="flex items-center gap-3 mb-2">
-                <div class="w-9 h-9 rounded-xl bg-cpa-very-light flex items-center justify-center">
-                    <ShieldCheck :size="18" class="text-cpa-medium-dark" />
+            <!-- Success flash -->
+            <Transition name="fade">
+                <div
+                    v-if="$page.props.flash?.success"
+                    class="flex items-center gap-2.5 bg-cpa-success-bg text-cpa-success border border-cpa-success/20 rounded-xl px-4 py-3 text-sm font-medium"
+                >
+                    <CheckCircle :size="16" class="flex-shrink-0" />
+                    {{ $page.props.flash.success }}
                 </div>
-                <div>
-                    <h1 class="text-xl font-semibold text-cpa-text-primary">Security</h1>
-                    <p class="text-xs text-cpa-text-muted">Manage password and two-factor authentication</p>
-                </div>
-            </div>
+            </Transition>
 
             <!-- Change password -->
             <div class="bg-white border border-cpa-border rounded-xl shadow-sm p-6">
@@ -54,50 +48,67 @@ const show2fa = ref(false)
                     <h2 class="text-base font-semibold text-cpa-text-primary">Change Password</h2>
                 </div>
 
-                <Transition name="fade">
-                    <div v-if="pwSuccess" class="flex items-center gap-2 bg-cpa-success-bg text-cpa-success text-sm font-medium rounded-lg px-4 py-2.5 mb-4">
-                        <CheckCircle :size="15" /> Password updated successfully.
-                    </div>
-                </Transition>
-
-                <div class="space-y-4">
+                <div class="space-y-4 max-w-sm">
+                    <!-- Current password -->
                     <div>
-                        <label class="block text-sm font-medium text-cpa-text-primary mb-1.5">Current Password</label>
-                        <input
-                            v-model="pwForm.current_password"
-                            type="password"
-                            autocomplete="current-password"
-                            class="w-full px-3 py-2 text-sm border border-cpa-border rounded-lg focus:outline-none focus:ring-2 focus:ring-cpa-medium"
-                            :class="{ 'border-cpa-danger': pwForm.errors.current_password }"
-                        />
+                        <label for="current_pw" class="block text-sm font-medium text-cpa-text-primary mb-1.5">Current Password</label>
+                        <div class="relative">
+                            <input
+                                id="current_pw"
+                                v-model="pwForm.current_password"
+                                :type="showCurrent ? 'text' : 'password'"
+                                autocomplete="current-password"
+                                class="w-full pr-10 px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-cpa-medium focus:border-cpa-medium transition-colors"
+                                :class="pwForm.errors.current_password ? 'border-cpa-danger' : 'border-cpa-border'"
+                            />
+                            <button type="button" class="absolute right-2.5 top-2.5 text-cpa-text-muted hover:text-cpa-text-primary" @click="showCurrent = !showCurrent">
+                                <component :is="showCurrent ? EyeOff : Eye" :size="15" />
+                            </button>
+                        </div>
                         <p v-if="pwForm.errors.current_password" class="text-cpa-danger text-xs mt-1">{{ pwForm.errors.current_password }}</p>
                     </div>
 
+                    <!-- New password -->
                     <div>
-                        <label class="block text-sm font-medium text-cpa-text-primary mb-1.5">New Password</label>
-                        <input
-                            v-model="pwForm.password"
-                            type="password"
-                            autocomplete="new-password"
-                            class="w-full px-3 py-2 text-sm border border-cpa-border rounded-lg focus:outline-none focus:ring-2 focus:ring-cpa-medium"
-                            :class="{ 'border-cpa-danger': pwForm.errors.password }"
-                        />
+                        <label for="new_pw" class="block text-sm font-medium text-cpa-text-primary mb-1.5">New Password</label>
+                        <div class="relative">
+                            <input
+                                id="new_pw"
+                                v-model="pwForm.password"
+                                :type="showNew ? 'text' : 'password'"
+                                autocomplete="new-password"
+                                class="w-full pr-10 px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-cpa-medium focus:border-cpa-medium transition-colors"
+                                :class="pwForm.errors.password ? 'border-cpa-danger' : 'border-cpa-border'"
+                            />
+                            <button type="button" class="absolute right-2.5 top-2.5 text-cpa-text-muted hover:text-cpa-text-primary" @click="showNew = !showNew">
+                                <component :is="showNew ? EyeOff : Eye" :size="15" />
+                            </button>
+                        </div>
                         <p v-if="pwForm.errors.password" class="text-cpa-danger text-xs mt-1">{{ pwForm.errors.password }}</p>
+                        <p class="text-xs text-cpa-text-muted mt-1">Min 12 characters. Use letters, numbers and symbols.</p>
                     </div>
 
+                    <!-- Confirm password -->
                     <div>
-                        <label class="block text-sm font-medium text-cpa-text-primary mb-1.5">Confirm New Password</label>
-                        <input
-                            v-model="pwForm.password_confirmation"
-                            type="password"
-                            autocomplete="new-password"
-                            class="w-full px-3 py-2 text-sm border border-cpa-border rounded-lg focus:outline-none focus:ring-2 focus:ring-cpa-medium"
-                        />
+                        <label for="confirm_pw" class="block text-sm font-medium text-cpa-text-primary mb-1.5">Confirm New Password</label>
+                        <div class="relative">
+                            <input
+                                id="confirm_pw"
+                                v-model="pwForm.password_confirmation"
+                                :type="showConfirm ? 'text' : 'password'"
+                                autocomplete="new-password"
+                                class="w-full pr-10 px-3 py-2 text-sm border border-cpa-border rounded-lg focus:outline-none focus:ring-2 focus:ring-cpa-medium focus:border-cpa-medium transition-colors"
+                            />
+                            <button type="button" class="absolute right-2.5 top-2.5 text-cpa-text-muted hover:text-cpa-text-primary" @click="showConfirm = !showConfirm">
+                                <component :is="showConfirm ? EyeOff : Eye" :size="15" />
+                            </button>
+                        </div>
                     </div>
 
                     <div class="flex justify-end pt-1">
                         <button
                             :disabled="pwForm.processing"
+                            type="button"
                             class="flex items-center gap-1.5 bg-cpa-medium-dark hover:bg-cpa-dark text-white font-medium rounded-lg px-5 py-2 text-sm transition-colors disabled:opacity-60"
                             @click="changePassword"
                         >
@@ -107,33 +118,45 @@ const show2fa = ref(false)
                 </div>
             </div>
 
-            <!-- 2FA status -->
+            <!-- Two-Factor Authentication -->
             <div class="bg-white border border-cpa-border rounded-xl shadow-sm p-6">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between flex-wrap gap-3">
                     <div class="flex items-center gap-2">
                         <Key :size="16" class="text-cpa-medium-dark" />
                         <h2 class="text-base font-semibold text-cpa-text-primary">Two-Factor Authentication</h2>
                     </div>
-                    <span :class="['text-xs font-semibold px-2 py-0.5 rounded-full', twoFactorEnabled ? 'bg-cpa-success-bg text-cpa-success' : 'bg-gray-100 text-gray-500']">
+                    <span :class="['text-xs font-semibold px-2.5 py-0.5 rounded-full', twoFactorEnabled ? 'bg-cpa-success-bg text-cpa-success' : 'bg-gray-100 text-gray-500']">
                         {{ twoFactorEnabled ? 'Enabled' : 'Disabled' }}
                     </span>
                 </div>
-                <p class="text-sm text-cpa-text-muted mt-2 mb-4">
-                    Add an extra layer of security with a time-based one-time password (TOTP) app like Google Authenticator or Authy.
+
+                <p class="text-sm text-cpa-text-muted mt-2 mb-4 max-w-md">
+                    Add an extra layer of security. When enabled, you'll need a code from your authenticator app each time you sign in.
                 </p>
-                <button
-                    class="text-sm font-medium text-cpa-medium-dark hover:text-cpa-dark transition-colors"
-                    @click="show2fa = !show2fa"
-                >
-                    {{ twoFactorEnabled ? 'Manage 2FA →' : 'Enable 2FA →' }}
-                </button>
+
+                <div class="flex items-center gap-3">
+                    <a
+                        v-if="!twoFactorEnabled"
+                        href="/two-factor/setup"
+                        class="flex items-center gap-1.5 bg-cpa-medium-dark hover:bg-cpa-dark text-white font-medium rounded-lg px-4 py-2 text-sm transition-colors"
+                    >
+                        <Shield :size="14" /> Enable 2FA
+                    </a>
+                    <a
+                        v-else
+                        href="/two-factor/setup"
+                        class="flex items-center gap-1.5 border border-cpa-border text-cpa-text-secondary hover:border-cpa-medium hover:text-cpa-dark rounded-lg px-4 py-2 text-sm transition-colors"
+                    >
+                        Manage 2FA
+                    </a>
+                </div>
             </div>
 
         </div>
-    </AppLayout>
+    </SettingsLayout>
 </template>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active { transition: opacity .2s ease; }
+.fade-enter-active, .fade-leave-active { transition: opacity .25s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

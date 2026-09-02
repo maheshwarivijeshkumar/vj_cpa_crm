@@ -22,7 +22,7 @@ use Inertia\Inertia;
 */
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
-Route::get('/', fn () => Inertia::render('Platform/Dashboard'))->name('dashboard');
+Route::get('/', fn () => Inertia::render('Platform/Dashboard/Index'))->name('dashboard');
 
 // ── Tenants ───────────────────────────────────────────────────────────────────
 Route::prefix('tenants')->name('tenants.')->group(function (): void {

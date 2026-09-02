@@ -46,8 +46,9 @@ Route::middleware('auth')->group(function (): void {
 
     // 2FA
     Route::get('/two-factor', [TwoFactorController::class, 'challenge'])->name('two-factor.challenge');
-    Route::post('/two-factor/enable',        [TwoFactorController::class, 'enable'])->name('two-factor.enable');
-    Route::post('/two-factor/confirm',       [TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
-    Route::delete('/two-factor',             [TwoFactorController::class, 'disable'])->name('two-factor.disable');
+    Route::post('/two-factor/challenge', [TwoFactorController::class, 'challenge'])->name('two-factor.challenge.store');
+    Route::post('/two-factor/enable',         [TwoFactorController::class, 'enable'])->name('two-factor.enable');
+    Route::post('/two-factor/confirm',        [TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
+    Route::delete('/two-factor',              [TwoFactorController::class, 'disable'])->name('two-factor.disable');
     Route::post('/two-factor/recovery-codes', [TwoFactorController::class, 'regenerateCodes'])->name('two-factor.recovery-codes');
 });

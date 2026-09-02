@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { Link, usePage, router } from '@inertiajs/vue3'
 import {
     LayoutDashboard, CreditCard, Users, Gift,
-    Bell, LogOut, Menu, X, Settings, ChevronRight,
+    Bell, LogOut, Menu, X, Settings, ChevronRight, Building2,
 } from '@lucide/vue'
 import { useAuthStore } from '@/stores/auth'
 import { useFlash } from '@/composables/useFlash'
@@ -35,6 +35,8 @@ const navItems = [
     { href: '/portal',              icon: LayoutDashboard, label: 'Dashboard'    },
     { href: '/portal/subscription', icon: CreditCard,      label: 'Subscription' },
     { href: '/portal/referrals',    icon: Gift,            label: 'Referrals'    },
+    { href: '/portal/team',         icon: Users,           label: 'Team'         },
+    { href: '/portal/offices',      icon: Building2,       label: 'Offices'      },
     { href: '/portal/profile',      icon: Settings,        label: 'Profile'      },
 ]
 </script>
