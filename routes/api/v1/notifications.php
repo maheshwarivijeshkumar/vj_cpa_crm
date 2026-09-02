@@ -1,15 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Http\Controllers\Api\V1\Notifications\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Module: notifications
 | Prefix: /api/v1/notifications
-| Auth:   auth:sanctum + tenant middleware (set in api.php hub)
+| Auth:   auth:sanctum + tenant (set in api.php hub)
 |--------------------------------------------------------------------------
-| Routes are registered here as this module is developed.
-| Each route must have a corresponding Policy + FormRequest + Controller.
+| In-app notification inbox for authenticated tenant users.
 */
 
-// TODO: Implement notifications routes in Phase development.
+Route::get('/',                       [NotificationController::class, 'index']);
+Route::get('/unread-count',           [NotificationController::class, 'unreadCount']);
+Route::post('/read-all',              [NotificationController::class, 'markAllRead']);
+Route::post('/{id}/read',             [NotificationController::class, 'markRead']);
+Route::delete('/{id}',                [NotificationController::class, 'destroy']);

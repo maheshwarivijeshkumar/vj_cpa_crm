@@ -1,15 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Http\Controllers\Api\V1\Settings\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Module: settings
 | Prefix: /api/v1/settings
-| Auth:   auth:sanctum + tenant middleware (set in api.php hub)
+| Auth:   auth:sanctum + tenant (set in api.php hub)
 |--------------------------------------------------------------------------
-| Routes are registered here as this module is developed.
-| Each route must have a corresponding Policy + FormRequest + Controller.
+| Self-service settings for authenticated users (profile, password, notifications).
 */
 
-// TODO: Implement settings routes in Phase development.
+Route::get('/profile',            [SettingsController::class, 'profile']);
+Route::patch('/profile',          [SettingsController::class, 'updateProfile']);
+Route::patch('/password',         [SettingsController::class, 'updatePassword']);
+Route::get('/notifications',      [SettingsController::class, 'notifications']);
+Route::patch('/notifications',    [SettingsController::class, 'updateNotifications']);

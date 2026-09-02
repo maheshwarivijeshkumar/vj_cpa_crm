@@ -78,10 +78,13 @@ Route::prefix('platform')->name('platform.')->middleware(['auth', 'verified'])->
 
 // ── Client portal ─────────────────────────────────────────────────────────────
 Route::prefix('portal')->name('portal.')->middleware(['auth', 'verified'])->group(function (): void {
-    Route::get('/',          fn () => Inertia::render('Portal/Dashboard'))->name('dashboard');
-    Route::get('/documents', fn () => Inertia::render('Portal/Documents'))->name('documents');
-    Route::get('/messages',  fn () => Inertia::render('Portal/Messages'))->name('messages');
-    Route::get('/invoices',  fn () => Inertia::render('Portal/Invoices'))->name('invoices');
-    Route::get('/filings',   fn () => Inertia::render('Portal/Filings'))->name('filings');
-    Route::get('/profile',   fn () => Inertia::render('Portal/Profile'))->name('profile');
+    Route::get('/',             fn () => Inertia::render('Portal/Dashboard'))->name('dashboard');
+    Route::get('/subscription', fn () => Inertia::render('Portal/Subscription'))->name('subscription');
+    Route::get('/referrals',    fn () => Inertia::render('Portal/Referrals'))->name('referrals');
+    Route::get('/profile',      fn () => Inertia::render('Portal/Profile'))->name('profile');
+    // Business module portal pages — stub until those modules are built
+    Route::get('/documents',    fn () => Inertia::render('Portal/Documents'))->name('documents');
+    Route::get('/messages',     fn () => Inertia::render('Portal/Messages'))->name('messages');
+    Route::get('/invoices',     fn () => Inertia::render('Portal/Invoices'))->name('invoices');
+    Route::get('/filings',      fn () => Inertia::render('Portal/Filings'))->name('filings');
 });
