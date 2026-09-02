@@ -11,9 +11,16 @@
 /storage/*.key
 /storage/pail
 /vendor
+# Legacy .env (replaced by .smartfox)
 .env
 .env.backup
 .env.production
+
+# .smartfox — environment file (never commit real credentials)
+.smartfox
+.smartfox.backup
+.smartfox.production
+# .smartfox.example is committed intentionally
 .phpactor.json
 .phpunit.result.cache
 Homestead.json

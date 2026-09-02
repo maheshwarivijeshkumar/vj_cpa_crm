@@ -1,21 +1,15 @@
-import inertia from '@inertiajs/vite';
-import { wayfinder } from '@laravel/vite-plugin-wayfinder';
-import tailwindcss from '@tailwindcss/vite';
-import vue from '@vitejs/plugin-vue';
-import laravel from 'laravel-vite-plugin';
-import { bunny } from 'laravel-vite-plugin/fonts';
-import { defineConfig } from 'vite';
+import inertia from '@inertiajs/vite'
+import tailwindcss from '@tailwindcss/vite'
+import vue from '@vitejs/plugin-vue'
+import laravel from 'laravel-vite-plugin'
+import { defineConfig } from 'vite'
+import { resolve } from 'path'
 
 export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.ts'],
             refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
-            ],
         }),
         inertia(),
         tailwindcss(),
@@ -27,19 +21,44 @@ export default defineConfig({
                 },
             },
         }),
-        wayfinder({
-            formVariants: true,
-        }),
+        // NOTE: @laravel/vite-plugin-wayfinder disabled until DB is migrated.
+        // Re-enable after running: php artisan migrate && php artisan wayfinder:generate
     ],
+
+    resolve: {
+        alias: {
+            '@': resolve(__dirname, 'resources/js'),
+        },
+    },
+
+    optimizeDeps: {
+        include: [
+            'vue',
+            'pinia',
+            '@vue/devtools-api',
+            '@lucide/vue',
+            'ziggy-js',
+            '@inertiajs/vue3',
+            '@inertiajs/core',
+        ],
+    },
+
+    build: {
+        target: 'es2020',
+        sourcemap: false,
+    },
+
     server: {
         watch: {
             ignored: [
                 '**/.agents/**',
                 '**/.claude/**',
                 '**/.cursor/**',
+                '**/.kiro/**',
                 '**/.junie/**',
                 '**/vendor/**',
+                '**/storage/**',
             ],
         },
     },
-});
+})

@@ -1,33 +1,28 @@
-import type { Auth } from '@/types/auth';
+import type { PageProps } from './inertia'
+import type { Page, Router } from '@inertiajs/core'
 
-// Extend ImportMeta interface for Vite...
+// ─── Vite env ─────────────────────────────────────────────────────────────────
 declare module 'vite/client' {
     interface ImportMetaEnv {
-        readonly VITE_APP_NAME: string;
-        [key: string]: string | boolean | undefined;
+        readonly VITE_APP_NAME: string
+        readonly VITE_APP_URL: string
+        [key: string]: string | boolean | undefined
     }
-
     interface ImportMeta {
-        readonly env: ImportMetaEnv;
-        readonly glob: <T>(pattern: string) => Record<string, () => Promise<T>>;
+        readonly env: ImportMetaEnv
+        readonly glob: <T>(pattern: string) => Record<string, () => Promise<T>>
     }
 }
 
+// ─── Inertia shared props ─────────────────────────────────────────────────────
 declare module '@inertiajs/core' {
-    export interface InertiaConfig {
-        sharedPageProps: {
-            name: string;
-            auth: Auth;
-            sidebarOpen: boolean;
-            [key: string]: unknown;
-        };
-    }
+    export interface PageProps extends PageProps {}
 }
 
+// ─── Vue global ───────────────────────────────────────────────────────────────
 declare module 'vue' {
     interface ComponentCustomProperties {
-        $inertia: typeof Router;
-        $page: Page;
-        $headManager: ReturnType<typeof createHeadManager>;
+        $page: Page<PageProps>
+        $inertia: typeof Router
     }
 }

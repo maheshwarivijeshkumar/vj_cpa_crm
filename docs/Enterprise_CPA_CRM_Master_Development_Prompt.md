@@ -7,7 +7,7 @@
 
 # 1. Product Vision
 
-Build a **production-grade, enterprise-level, multi-tenant CPA CRM, accounting practice management, tax/compliance, workflow, document management, billing, accounting, client portal, communications, reporting and automation SaaS platform**.
+Build a **production-grade, enterprise-level, multi-tenant CPA CRM, accounting practice management, tax/compliance, workflow, document management, billing, accounting, client portal, communications, reporting and automation SaaS platform, AI Chatbot**.
 
 The product must feel like a modern international CPA/practice-management product while remaining an original product. Do not copy another company's branding, proprietary assets, source code, UI, content or protected design.
 
@@ -151,13 +151,19 @@ Use:
 - PHP 8.4+
 - PostgreSQL preferred for the primary production implementation
 - MySQL compatibility where practical
+- Passport
 - Redis
 - Laravel Queue
 - Laravel Horizon
 - Laravel Scheduler
-- S3-compatible object storage
+- S3-compatible object storage / Local Too (Initial Local Storage later go with S3)
 - REST API
 - OpenAPI / Swagger documentation
+- Pusher
+- Mail configuration
+- Service Layer
+- Repository Patterns
+- AI based Chat Bot (Whatsapp)
 
 The backend must be **API-first**.
 
@@ -477,6 +483,7 @@ Seed:
 ```text
 Platform Super Administrator
 Platform Support Administrator
+Platform Accounting Administrator
 
 Firm Owner
 Firm Administrator
@@ -786,8 +793,10 @@ updated_at
 Client profile should include:
 
 - Personal/company information
+- Contact Types
 - Contact details
-- Addresses
+- Addresses Types
+- Addresses details
 - Tax identifiers
 - Tax residency
 - Client classification
@@ -3741,7 +3750,7 @@ Platform:
 
 ```text
 Taxation
-├── Countries
+├── Countries & currencies
 ├── Jurisdictions
 ├── Tax Authorities
 ├── Tax Types
@@ -4030,6 +4039,10 @@ Migration
 - Modules
 - Feature flags
 - Audit
+- Countries
+- Currencies
+- Language
+- Timezone
 
 ### Track B — CRM
 
@@ -5785,3 +5798,11 @@ Does it need a test?
 ```
 
 The resulting system must be a **real, extensible, enterprise-grade CPA CRM and accounting practice platform**, with a calm premium teal UI, centralized configuration, professional accounting controls, country-neutral taxation, powerful templates, robust notifications, secure client collaboration and a clean Laravel Eloquent architecture.
+
+
+
+```text
+Create Parallel Frontend & Backend both. Each module complete according to Backend API & Then frontend with proper integrations. Everytime clear previous build & make new build. 
+
+Also, convert .env to .smartfox and .smartfox work like .env and keep routes proper each module based. so, easy to track. After development of API's & Frontned also create postman collection. 
+````

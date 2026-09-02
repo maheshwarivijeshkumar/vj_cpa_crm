@@ -2,7 +2,7 @@
 
 ## Project Objective
 
-Build a **production-grade, enterprise-level CPA CRM, Accounting Practice Management, Client Portal, Workflow, Filing, Document Management, and Financial Management SaaS platform**.
+Build a **production-grade, enterprise-level CPA CRM, Accounting Practice Management, Client Portal, Workflow, Filing, Document Management, and Financial Management SaaS platform, AI Chatbot**.
 
 The system should provide functionality comparable to modern CPA practice management platforms while introducing more advanced capabilities, a stronger accounting architecture, better workflow automation, extensibility, security, and scalability.
 
@@ -67,7 +67,6 @@ Use:
 - Laravel Scheduler
 - S3-compatible object storage
 - REST API
-- Docker
 - OpenAPI / Swagger documentation
 
 The backend must be API-first.
